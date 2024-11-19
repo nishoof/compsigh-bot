@@ -4,19 +4,23 @@ import {
   InteractionType,
   InteractionResponseType,
   verifyKeyMiddleware,
-  MessageComponentTypes,
-  ButtonStyleTypes,
 } from 'discord-interactions';
 import { getRandomEmoji, getRandomFaadilImage } from './utils.js';
+
+// Max char length settings
+const MAX_NICK_LENGTH = 20;
+const MAX_PROJ_NAME_LENGTH = 20;
 
 // Create and configure express app
 const app = express();
 // Get port, or default to 3000
 const PORT = process.env.PORT || 3000;
 
-// Store faadil pet count
 // TODO: switch to database before production
+// Store faadil pet count
 let faadilPetCount = 0;
+// Store workingon data
+let workingonData = {};
 
 /**
  * Interactions endpoint URL where Discord will send HTTP requests
@@ -62,7 +66,43 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
         data: {
           content: `faadil has been pet ${faadilPetCount} times`,
-          files: ['faadilImages/media1.png']    // TODO: fix
+          files: [faadilImage]    // TODO: fix
+        },
+      });
+    }
+
+    // "workingon" command
+    if (name === 'workingon') {
+      const userId = req.body.member.user.id;
+      const userNick = req.body.member.nick || req.body.member.user.username;
+      const projectName = req.body.data.options[0].value;
+
+      if (userNick.length > MAX_NICK_LENGTH) {
+        return res.send({
+          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+          data: {
+            content: `Your nickname is too long! Must be 15 characters or less`
+          },
+        });
+      }
+
+      if (projectName.length > MAX_PROJ_NAME_LENGTH) {
+        return res.send({
+          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+          data: {
+            content: `Your project name is too long! Must be 15 characters or less`
+          },
+        });
+      }
+
+      workingonData[userId] = { userNick: userNick, projectName: projectName };
+
+      console.log(workingonData);
+
+      return res.send({
+        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+        data: {
+          content: `${userNick} is now working on ${projectName}`
         },
       });
     }
