@@ -1,7 +1,5 @@
 import { AttachmentBuilder } from 'discord.js';
 import 'dotenv/config';
-import fs from 'fs';
-import path from 'path';
 
 export async function DiscordRequest(endpoint, options) {
   // append endpoint to root API URL

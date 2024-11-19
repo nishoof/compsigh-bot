@@ -1,5 +1,8 @@
 {
   "type": "module",
+  "scripts": {
+    "lint": "eslint ./"
+  },
   "dependencies": {
     "discord-interactions": "^4.1.0",
     "discord.js": "^14.16.3",
@@ -7,6 +10,8 @@
     "express": "^4.21.1"
   },
   "devDependencies": {
-    "eslint": "^9.15.0"
+    "@eslint/js": "^9.15.0",
+    "eslint": "^9.15.0",
+    "globals": "^15.12.0"
   }
 }
