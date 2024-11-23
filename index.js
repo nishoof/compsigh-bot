@@ -1,5 +1,5 @@
-import { Client, Collection, Events, GatewayIntentBits } from 'discord.js';
 import 'dotenv/config';
+import { Client, Collection, Events, GatewayIntentBits } from 'discord.js';
 import { allCommands } from './commands.js';
 
 // Create a new client instance
