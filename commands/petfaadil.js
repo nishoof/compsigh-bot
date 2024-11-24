@@ -1,5 +1,6 @@
 import fs from 'fs';
 import { AttachmentBuilder, SlashCommandBuilder } from 'discord.js';
+import { getPetCount, updatePetCount } from '../mongoDB.js';
 
 const imgs = [];
 const folderName = './faadilImages';
@@ -7,7 +8,7 @@ fs.readdirSync(folderName).forEach((file) => {
 	imgs.push(new AttachmentBuilder(`${folderName}/${file}`));
 });
 
-let faadilPetCount = 0;
+let faadilPetCount = await getPetCount();	// get initial pet count from database
 
 const petfaadilCommand = {
 	data: new SlashCommandBuilder()
@@ -22,6 +23,7 @@ const petfaadilCommand = {
 			content: reply,
 			files: [imgs[imgNum]]
 		});
+		await updatePetCount(faadilPetCount);		// update database
 	},
 };
 

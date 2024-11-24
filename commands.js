@@ -1,7 +1,7 @@
 import 'dotenv/config';
 
 // eslint-disable-next-line no-unused-vars
-import { InstallGlobalCommands, InstallGuildCommands } from './utils.js';
+import { installGlobalCommands, installGuildCommands } from './utils.js';
 
 import pingCommand from './commands/ping.js';
 import petfaadilCommand from './commands/petfaadil.js';
@@ -22,4 +22,4 @@ allCommands.forEach((command) => {
 
 // Overwrite guild commands
 // InstallGuildCommands(process.env.APP_ID, process.env.TEST_GUILD_ID, allCommandsData);
-InstallGuildCommands(process.env.APP_ID, process.env.TEST_GUILD_ID, []);
+// installGuildCommands(process.env.APP_ID, process.env.TEST_GUILD_ID, []);         // remove all guild commands
