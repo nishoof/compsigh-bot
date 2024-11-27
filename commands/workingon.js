@@ -1,28 +1,53 @@
 import { SlashCommandBuilder } from 'discord.js';
 
-let workingonData = {};
+const API_URL = 'http://localhost:3000/api/marquee'; // TODO: update when api makes it to prod
 
 const workingonCommand = {
-	data: new SlashCommandBuilder()
-		.setName('workingon')
-		.setDescription('Sets the project that you are currently working on')
-        .addStringOption(option => 
+    data: new SlashCommandBuilder()
+        .setName('workingon')
+        .setDescription('Sets the project that you are currently working on')
+        .addStringOption(option =>
             option.setName('project')
-            .setDescription('Your project\'s name')
-            .setRequired(true)
-            .setMaxLength(20)
+                .setDescription('Your project\'s name')
+                .setRequired(true)
+                .setMaxLength(20)
         ),
 
     async execute(interaction) {
+        await interaction.deferReply();
+
+        // Get data from the interaction
         const userid = interaction.user.id;
         const usernick = interaction.member.nickname || interaction.user.username;
         const projectName = interaction.options.getString('project');
 
-        workingonData[userid] = { user: usernick, project: projectName}
-        console.log(workingonData);
+        // Send data to the API to update the user's project
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${process.env.MARQUEE_API_KEY}`
+            },
+            body: JSON.stringify({
+                id: userid,
+                nickname: usernick,
+                project: projectName,
+            })
+        });
 
-		await interaction.reply(`${usernick} is now working on ${projectName}!`);
-	},
+        // Handle HTTP errors
+        if (!response.ok) {
+            await interaction.editReply({
+                content: `Something went wrong`,
+                ephemeral: true
+            });
+            console.error(`HTTP error! ${response.status}: ${response.statusText}`);
+            return;
+        }
+
+        // Success message
+        await interaction.editReply(`${usernick} is now working on ${projectName}!`);
+    },
 };
 
 export default workingonCommand;

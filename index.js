@@ -2,6 +2,9 @@ import 'dotenv/config';
 import { Client, Collection, Events, GatewayIntentBits } from 'discord.js';
 import { allCommands } from './commands.js';
 
+const compsighGuildId = "849685154543960085";
+const guildWhitelist = [process.env.TEST_GUILD_ID, compsighGuildId];
+
 // Create a new client instance
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
@@ -11,15 +14,29 @@ allCommands.forEach((command) => {
 	client.commands.set(command.data.name, command);
 });
 
+// On guild join
+client.on('guildCreate', guild => {
+	console.log(`Joined guild ${guild.id}`);
+	if (!guildWhitelist.includes(guild.id)) {
+		console.log(`Leaving guild ${guild.id} as it is not in the whitelist.`);
+		guild.leave();
+	}
+})
+
 // On client ready (ran only once).
 client.once(Events.ClientReady, readyClient => {
-  console.log(`Ready! Logged in as ${readyClient.user.tag}`);
+	console.log(`Ready! Logged in as ${readyClient.user.tag}`);
 });
 
 // On command interaction
 client.on(Events.InteractionCreate, async interaction => {
 	// Ignore interactions that aren't slash commands
 	if (!interaction.isChatInputCommand()) return;
+
+	// Ignore interactions from guilds not in the whitelist
+	if (!guildWhitelist.includes(interaction.guildId)) {
+		return await interaction.reply({ content: `This bot is not enabled for this guild`, ephemeral: true });
+	}
 
 	// Get the command
 	const command = interaction.client.commands.get(interaction.commandName);

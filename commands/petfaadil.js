@@ -16,8 +16,8 @@ const petfaadilCommand = {
 		.setDescription('Pets faadil c:'),
 
 	async execute(interaction) {
-        faadilPetCount++;
-		let reply = `faadil has been pet ${faadilPetCount} times`;
+		faadilPetCount++;
+		let reply = `faadil has been pet ${faadilPetCount} ${faadilPetCount === 1 ? 'time' : 'times'}`;
 		let imgNum = Math.floor(Math.random() * 6);
 		await interaction.reply({
 			content: reply,

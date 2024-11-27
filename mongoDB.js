@@ -13,25 +13,10 @@ const client = new MongoClient(uri, {
     }
 });
 
-async function connect() {
-    try {
-        // Connect the client to the server
-        await client.connect();
-        
-        // Send a ping to confirm a successful connection
-        await client.db("admin").command({ ping: 1 });
-        console.log("Connected to MongoDB");
-
-        // Get collection
-        const database = client.db('petfaadil');
-        dbCollection = database.collection('petfaadil');
-    } catch (e) {
-        await client.close();
-        console.error(e);
-    }
-}
-
-// Updates the petcount in the database with the given value
+/**
+ * Updates the petcount in the database with the given value.
+ * @param petcount the new petcount
+ */
 export async function updatePetCount(petcount) {
     if (dbCollection == null) {
         await connect();
@@ -47,7 +32,10 @@ export async function updatePetCount(petcount) {
     console.log("Updated database with petcount: " + petcount);
 }
 
-// Returns the petcount from the database. Used for initial pet count when bot starts
+/**
+ * Returns the petcount from the database.
+ * @returns the current petcount in the database
+ */
 export async function getPetCount() {
     if (dbCollection == null) {
         await connect();
@@ -56,4 +44,25 @@ export async function getPetCount() {
     const filter = { docName: docName };
     const res = await dbCollection.findOne(filter)
     return res.petcount;
+}
+
+/**
+ * Connects to the MongoDB database.
+ */
+async function connect() {
+    try {
+        // Connect the client to the server
+        await client.connect();
+
+        // Send a ping to confirm a successful connection
+        await client.db("admin").command({ ping: 1 });
+        console.log("Connected to MongoDB");
+
+        // Get collection
+        const database = client.db('petfaadil');
+        dbCollection = database.collection('petfaadil');
+    } catch (e) {
+        await client.close();
+        console.error(e);
+    }
 }
