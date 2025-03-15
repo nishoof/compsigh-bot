@@ -1,8 +1,8 @@
 import 'dotenv/config';
-import { REST, RESTPostAPIChatInputApplicationCommandsJSONBody, Routes } from 'discord.js';
-import { SlashCommandOptionsOnlyBuilder } from 'discord.js';
+import { REST, RESTPostAPIChatInputApplicationCommandsJSONBody, Routes, SlashCommandOptionsOnlyBuilder } from 'discord.js';
 import pingCommand from './commands/ping.js'
 import petfaadilCommand from './commands/petfaadil.js';
+import workingonCommand from './commands/workingon.js';
 
 export type Command = {
     data: SlashCommandOptionsOnlyBuilder;
@@ -10,7 +10,7 @@ export type Command = {
 }
 
 // Commands in basic array
-export const commands = [pingCommand, petfaadilCommand];
+export const commands = [pingCommand, petfaadilCommand, workingonCommand];
 
 // Commands in a map from command name -> Command
 const nameToCommandMap = new Map<string, Command>();
